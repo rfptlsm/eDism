@@ -1,0 +1,1 @@
+@ powershell -noprofile -nologo -executionpolicy bypass -File edism.ps1
