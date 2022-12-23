@@ -75,8 +75,6 @@ function unmountWIM {
 
 	# Read-Host "y/N?" | ?{$_} | Write-Output
 
-	
-
 	try {
 		Write-Host "Unmount wim file..." -ForegroundColor green
 		if($change -eq "y") {
@@ -101,15 +99,30 @@ function Menu {
     $global:Admin = $user.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator);
 
 	while (1) {
-		Write-Host "`t================================= eDism Program =================================" -ForegroundColor green
-		Write-Host "`t1 - Copy From ISO | 2 - Mount Image | 3 - Unmount Image | q or any - exit" -ForegroundColor DarkGreen
-		Write-Host "`t=================================================================================" -ForegroundColor green
-		$x = Read-Host "Select an action"
+		Write-Host "`t===============" -NoNewline -ForegroundColor Green
+		Write-Host " eDism Program " -NoNewline -ForegroundColor Green
+		Write-Host "=================" -ForegroundColor Green
+		Write-Host "`t`t1 " -NoNewline -ForegroundColor DarkGreen
+		Write-Host "- Copy From ISO " -ForegroundColor DarkGray
+		Write-Host "`t`t2 " -NoNewline -ForegroundColor DarkGreen
+		Write-Host "- Mount [install.wim] " -ForegroundColor DarkGray 
+		Write-Host "`t`t3 " -NoNewline -ForegroundColor DarkGreen
+		Write-Host "- Unmount [install.wim] " -ForegroundColor DarkGray
+		Write-Host "`t`t4 " -NoNewline -ForegroundColor DarkGreen
+		Write-Host "- Mount [boot.wim] " -ForegroundColor DarkGray 
+		Write-Host "`t`t5 " -NoNewline -ForegroundColor DarkGreen
+		Write-Host "- Unmount [boot.wim] " -ForegroundColor DarkGray
+		Write-Host "`t`tq " -NoNewline -ForegroundColor DarkRed
+		Write-Host "or any - exit" -ForegroundColor DarkGray
+		Write-Host "`t===============================================" -ForegroundColor Green
+		$choice = Read-Host "Select an action"
 
-		switch ($x) {
+		switch ($choice) {
 			1 {insertAndCopyFileWim}
 			2 {mountWIM(".\install.wim")}
 			3 {unmountWIM(".\install.wim")}
+			4 {mountWIM(".\boot.wim")}
+			5 {unmountWIM(".\boot.wim")}
 			Default {exit}
 		}
 	}
