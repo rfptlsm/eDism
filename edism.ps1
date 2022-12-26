@@ -78,20 +78,19 @@ function unmountWIM {
 		$imgWIM
 	)
 
-	$change = Read-Host "Are you sure you want to save the changes?`v(y/N)"
-
-	# Read-Host "y/N?" | ?{$_} | Write-Output
+	$change = Read-Host "Are you sure you want to save the changes?`v[y/N]"
 
 	try {
-		Write-Host "Unmount wim file..." -ForegroundColor green
-		if($change -eq "y") {
+		
+		if($change -eq 'y') {
+			Write-Host "Unmount and saving wim file..." -ForegroundColor green
 			Dismount-WindowsImage -Path .\temp\"$imgWIM" -Save
-			# $change = "-Save"
 		}
 		else {
+			Write-Host "Unmount without saving wim file..." -ForegroundColor Red
 			Dismount-WindowsImage -Path .\temp\"$imgWIM" -Discard
-			# $change = "-Discard"
 		}
+		Remove-Item ".\temp\$imgWIM"
 		
 		Write-Host "Done" -ForegroundColor green
 	}
@@ -102,8 +101,12 @@ function unmountWIM {
 
 function Menu {
 	#Check if elevated
-    [Security.Principal.WindowsPrincipal]$global:User = [Security.Principal.WindowsIdentity]::GetCurrent();
-    $global:Admin = $user.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator);
+    [Security.Principal.WindowsPrincipal]$User = [Security.Principal.WindowsIdentity]::GetCurrent();
+    $Admin = $user.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator);
+	
+	if(!$Admin){
+		Write-Host "`t You need administrator rights" -ForegroundColor Red
+	}
 
 	while (1) {
 		Write-Host "`t===============" -NoNewline -ForegroundColor Green
