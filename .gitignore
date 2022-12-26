@@ -1,4 +1,3 @@
 /temp
-boot.wim
-install.wim
+*.wim
 *.iso

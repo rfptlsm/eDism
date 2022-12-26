@@ -4,10 +4,17 @@ function insertAndCopyFileWim {
 
 	$isoIMG = Get-ChildItem $currentPath\*win*.iso | Select-Object BaseName | ForEach-Object {$_.BaseName + ".ISO"}
 
+	if($null -eq $isoIMG){
+		Write-Host "ISO image not found`t:-(" -ForegroundColor Red
+		exit
+	}
+
+	Get-ChildItem *.wim | Rename-Item -NewName { $_.Name -replace '.wim','.old.wim' }
+
 	$pathToFile = "$currentPath\$isoIMG"
 	Write-Output $isoIMG
 
-	$driveLetter =  ls function:[d-z]: -n | ?{ !(test-path $_) } | random
+	$driveLetter =  Get-ChildItem function:[d-z]: -n | ?{ !(test-path $_) } | random
 
 	$diskImg = Mount-DiskImage -ImagePath $pathToFile  -NoDriveLetter
 	$volInfo = $diskImg | Get-Volume
@@ -103,7 +110,7 @@ function Menu {
 		Write-Host " eDism Program " -NoNewline -ForegroundColor Green
 		Write-Host "=================" -ForegroundColor Green
 		Write-Host "`t`t1 " -NoNewline -ForegroundColor DarkGreen
-		Write-Host "- Copy From ISO " -ForegroundColor DarkGray
+		Write-Host "- Copy from ISO " -ForegroundColor DarkGray
 		Write-Host "`t`t2 " -NoNewline -ForegroundColor DarkGreen
 		Write-Host "- Mount [install.wim] " -ForegroundColor DarkGray 
 		Write-Host "`t`t3 " -NoNewline -ForegroundColor DarkGreen
