@@ -99,6 +99,33 @@ function unmountWIM {
 	}
 }
 
+function addPackage {
+	param (
+		$imgWIM
+	)
+	$currentLocation = Get-Location
+
+	$mountDisk = "$currentLocation\temp\$imgWIM"
+
+	$DriverDir = Get-ChildItem -Directory $currentLocation\*driver*
+
+	# if($DriverDir.count -gt 1){
+	# 	foreach($i in $DriverDir){
+	# 		if($i.Name -notlike "Driver"){
+	# 			Move-Item $i ".\Driver"
+	# 		}
+	# 	}
+	# }
+
+
+	Add-WindowsDriver -Path $mountDisk -Driver "$currentLocation\driver" -Recurse
+
+	# Add an unsigned driver package
+	Add-WindowsDriver -Path $mountDisk -Driver "$currentLocation\driver" -ForceUnsigned -Recurse
+	
+
+}
+
 function Menu {
 	#Check if elevated
     [Security.Principal.WindowsPrincipal]$User = [Security.Principal.WindowsIdentity]::GetCurrent();
@@ -133,6 +160,7 @@ function Menu {
 			3 {unmountWIM(".\install.wim")}
 			4 {mountWIM(".\boot.wim")}
 			5 {unmountWIM(".\boot.wim")}
+			6 {addPackage}
 			Default {exit}
 		}
 	}
